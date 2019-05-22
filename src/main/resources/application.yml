@@ -1,0 +1,67 @@
+# =======================================
+# = JWT Configuration
+# =======================================
+jwtSecret: jwtSecretKey
+jwtExpiration: 86400 # -> 1 day
+
+# =======================================
+# = Server Configuration
+# =======================================
+server:
+  port: 22501
+
+# =======================================
+# = Spring Configuration
+# =======================================
+spring:
+  application:
+    name: zuul-gateway
+
+# =======================================
+# = Eureka Configuration
+# =======================================
+eureka:
+  instance:
+    prefer-ip-address: false
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:22500/eureka
+
+
+# =======================================
+# = Management Configuration
+# =======================================
+management:
+  endpoint:
+    routes:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+# =======================================
+# = Zuul Configuration
+# =======================================
+zuul:
+  sensitive-headers: Cookie,Set-Cookie
+  ignored-services: '*'
+  routes:
+    authentication:
+      path: /auth/**
+      service-id: authentication-service
+      url: http://localhost:22502/
+    user:
+      path: /user/**
+      service-id: user-service
+      url: http://localhost:22503/
+    chat:
+      path: /chat/**
+      service-id: chat-service
+      url: http://localhost:22504/
+    lobby:
+      path: /lobby/**
+      service-id: lobby-service
+      url: http://localhost:22505/
