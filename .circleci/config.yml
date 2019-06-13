@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/chatapp-zuul
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: chatapp-zuul-{{checksum "pom.xml"}}
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: chatapp-zuul-{{checksum "pom.xml"}}
+      - run: mvn package
+
+      - store_test_results:
+          path: target/surefire-reports
+
+      - store_artifacts:
+          path: target/chatapp-zuul-1.0.1-SNAPSHOT.jar
