@@ -20,3 +20,10 @@ jobs:
 
       - store_artifacts:
           path: target/chatapp-zuul-1.0.1-SNAPSHOT.jar
+      - setup_remote_docker:
+          docker_layer_caching: true
+            - run:
+                name: Build and push Docker image
+                command: |
+                  echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+                  mvn clean compile com.google.cloud.tools:jib-maven-plugin:0.9.7:build -Dimage=tommygoossens/chatapp-gateway
