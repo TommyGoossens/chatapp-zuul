@@ -20,6 +20,19 @@ jobs:
 
       - store_artifacts:
           path: target/chatapp-zuul-1.0.1-RELEASE.jar
+      - run:
+          name: Install sonarqube
+          command: |
+            wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
+            unzip sonar-scanner-cli-3.3.0.1492-linux.zip
+      - run: - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+          name: Run Sonarqube scanner
+          command: |
+            mvn sonar:sonar
+            -Dsonar.projectKey=chatapp-zuul
+            -Dsonar.organization=tommygoossens-github
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.login=${SONARQUBE_TOKEN}
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -27,3 +40,4 @@ jobs:
           command: |
             echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
             mvn clean compile com.google.cloud.tools:jib-maven-plugin:0.9.7:build -Dimage=tommygoossens/chatapp-gateway:release
+
