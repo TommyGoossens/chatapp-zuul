@@ -26,13 +26,23 @@ jobs:
             wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
             unzip sonar-scanner-cli-3.3.0.1492-linux.zip
       - run:
-          name: Run Sonarqube scanner
-          command: |
-            mvn sonar:sonar \
-              -Dsonar.projectKey=chatapp-zuul \
-              -Dsonar.organization=tommygoossens-github \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${SONARQUBE_TOKEN}
+          name: Run Sonarqube Code Quality Analysis and Dump Coverage/Execution Reports There # for some reason the npm install of sonar-scanner doesn't work
+          command: | # @todo: cache this? use curl rather than installing wget?
+            export MAVEN_OPTS="-Xms256m -Xmx1024m"
+            export SONAR_RUNNER_OPTS="-Xms256m -Xmx1024m"
+            export SONAR_VER=3.0.3.778-linux
+            wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_VER.zip
+            unzip sonar-scanner-cli-$SONAR_VER.zip;
+            mv sonar-scanner-$SONAR_VER/ /root/;
+            /root/sonar-scanner-$SONAR_VER/bin/sonar-scanner -Dsonar.login=${SONARQUBE_TOKEN} -X;
+#      - run:
+#          name: Run Sonarqube scanner
+#          command: |
+#            mvn sonar:sonar \
+#              -Dsonar.projectKey=chatapp-zuul \
+#              -Dsonar.organization=tommygoossens-github \
+#              -Dsonar.host.url=https://sonarcloud.io \
+#              -Dsonar.login=${SONARQUBE_TOKEN}
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
