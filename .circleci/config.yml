@@ -28,11 +28,11 @@ jobs:
       - run:
           name: Run Sonarqube scanner
           command: |
-                     mvn sonar:sonar
-            -Dsonar.projectKey=chatapp-zuul
-            -Dsonar.organization=tommygoossens-github
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.login=${SONARQUBE_TOKEN}
+            mvn sonar:sonar \
+              -Dsonar.projectKey=chatapp-zuul \
+              -Dsonar.organization=tommygoossens-github \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${SONARQUBE_TOKEN}
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
